@@ -377,6 +377,8 @@ def calculateAUC(model, data):
     lossFunc = torch.nn.L1Loss()
 
     for i, dataPoint in enumerate(data["test_data"]):
+        dataPoint = torch.tensor(dataPoint).to(device)
+        
         result = model(dataPoint)
         loss = lossFunc(dataPoint, result)
         results[i] = loss.item()
