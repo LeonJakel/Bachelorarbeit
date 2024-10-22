@@ -306,6 +306,9 @@ def training(model, train_dataset, val_dataset, epochs):
     return model.eval(), history, last_train_loss, last_val_loss
 
 
+
+
+
 """##Chosing a threshold"""
 
 
@@ -378,7 +381,7 @@ def calculateAUC(model, data):
 
     for i, dataPoint in enumerate(data["test_data"]):
         dataPoint = torch.tensor(dataPoint).to(device)
-        
+
         result = model(dataPoint)
         loss = lossFunc(dataPoint, result)
         results[i] = loss.item()
@@ -454,12 +457,14 @@ def main():
     else:
         print("no model selected")
         exit(-1)
-
-    model, history, last_train_loss, last_val_loss = training(model, train_dataset, val_dataset, epochs=epochs)
+    with torch.profiler.profile(with_stack=True) as prof:
+        model, history, last_train_loss, last_val_loss = training(model, train_dataset, val_dataset, epochs=epochs)
 
     end_time = time.time()
     total_time = round(end_time - start_time, 2)
     print(f'Total time to finish training: {total_time}')
+
+    print(prof.key_averages().table(sort_by="cuda_time_total", row_limit=10))
 
     # Saving the Model
     torch.save(model, model_path)
@@ -481,6 +486,7 @@ def main():
         "test_labels": np.array([0] * len(test_normal_dataset) + [1] * (len(anomaly_dataset)))
     }
 
+    print(type(data))
     auc_score = calculateAUC(model, data)  # Calculate AUC Score
     print(f'AUC ROC Score: {auc_score}')
 
