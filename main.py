@@ -35,6 +35,9 @@ import sys
 import csv
 import random
 
+print(torch.cuda.is_available())
+print(torch.version.cuda)
+
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 RANDOM_SEED = random.randint(0, 2 ** 32 - 1)
