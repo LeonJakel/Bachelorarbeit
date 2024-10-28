@@ -26,8 +26,6 @@ from scipy.io import arff
 import torch
 import numpy as np
 import pandas as pd
-import seaborn as sns
-import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from torch import nn, optim
 import time
@@ -445,11 +443,13 @@ def main():
     threshold = 26
     results_file_name = sys.argv[3] + '.csv'
 
+
+
     df = load_files(train_file, test_file)  # load both files into panda dataframe
 
     train_dataset, val_dataset, test_normal_dataset, test_anomaly_dataset, seq_len, n_features = data_preprocessing \
         (df, train_split_ratio, val_split_ratio)
-    print(f"Seq_len:  {seq_len}  n_features:  {n_features}")
+    print(f"Seq_len:  {seq_len}  n_features:  {n_features} Model: {model_used} Epochs: {epochs} Resultfile: {results_file_name}")
     if model_used == "RAE":
         model = RecurrentAutoencoder(seq_len, n_features, embedding_dim=embedding_size).to(device)
     elif model_used == "FF":
@@ -457,14 +457,14 @@ def main():
     else:
         print("no model selected")
         exit(-1)
-    with torch.profiler.profile(with_stack=True) as prof:
-        model, history, last_train_loss, last_val_loss = training(model, train_dataset, val_dataset, epochs=epochs)
+
+    model, history, last_train_loss, last_val_loss = training(model, train_dataset, val_dataset, epochs=epochs)
 
     end_time = time.time()
     total_time = round(end_time - start_time, 2)
     print(f'Total time to finish training: {total_time}')
 
-    print(prof.key_averages().table(sort_by="cuda_time_total", row_limit=10))
+
 
     # Saving the Model
     torch.save(model, model_path)
@@ -494,6 +494,13 @@ def main():
     write_results_to_csv(model_used, epochs, embedding_size, threshold, last_train_loss, last_val_loss, correct_normal,
                          correct_anomaly, total_time, auc_score, results_file_name)
 
+multiple_runs = sys.argv[4]
+num_runs = sys.argv[5]
 
 if __name__ == '__main__':
-    main()
+    if multiple_runs == True:
+        for i in range(num_runs):
+            print(f"Execution {i + 1} of {num_runs}")
+            main()
+    else:
+        main()
