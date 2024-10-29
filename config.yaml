@@ -1,0 +1,12 @@
+training:
+  embedding_size : 64
+  model_path : 'model.pth'
+
+data:
+  train_file: 'ECG5000_TRAIN.arff'
+  test_file: 'ECG5000_TEST.arff'
+  train_split_ratio: 0.85
+  val_split_ratio: 0.5
+
+prediction:
+  threshold : 26

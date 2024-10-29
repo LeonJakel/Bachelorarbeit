@@ -32,6 +32,7 @@ import time
 import sys
 import csv
 import random
+import yaml
 
 print(torch.cuda.is_available())
 print(torch.version.cuda)
@@ -425,22 +426,30 @@ def write_results_to_csv(model, epochs, embedding_size, threshold, train_loss, v
 
     print(f'Results written to {filename} successfully!')
 
+def load_config(path="config.yaml"):
+    with open(path, "r") as file:
+        config = yaml.safe_load(file)
+    return config
 
 # Main
 
 def main():
+    config = load_config()
+
     start_time = time.time()
 
     # config
-    train_file = 'ECG5000_TRAIN.arff'
-    test_file = 'ECG5000_TEST.arff'
-    train_split_ratio = 0.85
-    val_split_ratio = 0.5
-    embedding_size = 64
-    model_path = 'model.pth'
+    train_file = config["data"]["train_file"]
+    test_file = config["data"]["test_file"]
+    train_split_ratio = config["data"]["train_split_ratio"]
+    val_split_ratio = config["data"]["val_split_ratio"]
+
+    embedding_size = config["training"]["embedding_size"]
+    model_path = config["training"]["model_path"]
     model_used = sys.argv[1]
     epochs = int(sys.argv[2])
-    threshold = 26
+
+    threshold = config ["prediction"]["threshold"]
     results_file_name = sys.argv[3] + '.csv'
 
 
@@ -495,10 +504,10 @@ def main():
                          correct_anomaly, total_time, auc_score, results_file_name)
 
 multiple_runs = sys.argv[4]
-num_runs = sys.argv[5]
+num_runs = int(sys.argv[5])
 
 if __name__ == '__main__':
-    if multiple_runs == True:
+    if multiple_runs ==True:
         for i in range(num_runs):
             print(f"Execution {i + 1} of {num_runs}")
             main()

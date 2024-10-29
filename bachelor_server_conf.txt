@@ -1,0 +1,19 @@
+Main.py updaten via Git
+	cd PycharmProjects/
+	cd bachelorarbeit_python/
+	git add main.py
+	git commit -m "Updated main.py"
+	git push origin master
+
+Grunau7 verbinden:
+	ssh jakelleo@gruenau7.informatik.hu-berlin.de
+	
+
+Zum richtigen Verzeichnis wechseln
+	cd Bachelorarbeit/Bachelorarbeit
+	
+Im Repo Updaten:
+	git pull
+
+Conda Aktivieren:
+	conda activate testPx
