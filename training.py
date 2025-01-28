@@ -3,11 +3,11 @@ from torch import nn
 import time
 import numpy as np
 
-#device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+# device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 device = torch.device('cpu')
 
 
-def train(model, train_dataset, val_dataset, epochs):
+def train(model, train_dataset, val_dataset, epochs, early_stopping_criterion=None):
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
     criterion = nn.L1Loss(reduction='sum').to(device)
 
@@ -55,5 +55,10 @@ def train(model, train_dataset, val_dataset, epochs):
         end_time = time.time()
         print(f'Epoch {epoch}: train Loss {train_loss} | val Loss {val_loss} | elapsed time  \
         {round(end_time - start_time, 2)}s')
+
+        # Check Early Stopping
+        if early_stopping_criterion and early_stopping_criterion.should_stop(history):
+            print('Early stopping')
+            break
 
     return model.eval(), history, last_train_loss, last_val_loss

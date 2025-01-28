@@ -2,27 +2,38 @@ import torch
 from torch import nn
 import numpy as np
 import csv
+import plot
 
 #device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 device = torch.device('cpu')
 
 
 def predict(model, dataset):
-    prediction, losses = [], []
+    prediction, losses, = [], []
+    seq_true_list, seq_pred_list = [], []
     criterion = nn.L1Loss(reduction='sum').to(device)
 
     with torch.no_grad():
         model = model.eval()
+
+
+
         for seq_true in dataset:
+
+
             seq_true = seq_true.to(device)
             seq_pred = model(seq_true)
+
+
+            seq_true_list.append(seq_true)
+            seq_pred_list.append(seq_pred)
 
             loss = criterion(seq_pred, seq_true)
 
             prediction.append(seq_pred.cpu().numpy())
             losses.append(loss.item())
 
-    return prediction, losses
+    return prediction, losses, seq_true_list, seq_pred_list
 
 
 def calculateAUC(model, data):

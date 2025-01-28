@@ -37,6 +37,7 @@ def create_dataset(sequences):
 
 
 def data_preprocessing(df, train_split_ratio, val_split_ratio, CLASS_NORMAL, RANDOM_SEED):
+
     normal_df = df[df.target == str(CLASS_NORMAL)].drop(labels='target', axis=1)
     anomaly_df = df[df.target != str(CLASS_NORMAL)].drop(labels='target', axis=1)
 
@@ -52,5 +53,4 @@ def data_preprocessing(df, train_split_ratio, val_split_ratio, CLASS_NORMAL, RAN
     val_dataset, seq_len, n_features = create_dataset(val_sequences)
     test_normal_dataset, seq_len, n_features = create_dataset(test_sequences)
     test_anomaly_dataset, seq_len, n_features = create_dataset(anomaly_sequences)
-
     return train_dataset, val_dataset, test_normal_dataset, test_anomaly_dataset, seq_len, n_features

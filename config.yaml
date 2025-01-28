@@ -3,10 +3,18 @@ training:
   model_path : 'model.pth'
 
 data:
+  dataset: 'SMD'
   train_file: 'ECG5000_TRAIN.arff'
   test_file: 'ECG5000_TEST.arff'
   train_split_ratio: 0.85
   val_split_ratio: 0.5
+  smd_normal_number: 1000
+  smd_anomaly_number: 300
+  smd_length: 140
+  smd_machine_1: 1
+  smd_machine_2: 1
+  smd_col: 1
+
 
 prediction:
-  threshold : 26
+  threshold : 5.5
